@@ -17,20 +17,21 @@ interface PageProps {
   params: Promise<Params>;
 }
 
-export default async function MoviePage({ params }: PageProps) {
+export default function MoviePage({ params }: PageProps) {
   const [movie, setMovie] = useState<Media | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<Error | null>(null);
   const { isInMyList, addToMyList, removeFromMyList } = useMyList();
   const router = useRouter();
 
-  const { id } = await params;
+  let event: string | undefined;
 
   useEffect(() => {
     const fetchMovie = async () => {
       try {
         setIsLoading(true);
-
+        const { id } = await params;
+        event = id;
         const movieData = await getMediaDetails(id, "movie");
         setMovie(movieData);
       } catch (err) {
@@ -120,7 +121,7 @@ export default async function MoviePage({ params }: PageProps) {
               </>
             )}
           </Button>
-          <VideoPlayer movieId={id} mediaType="movie" />
+          <VideoPlayer movieId={event || ""} mediaType="movie" />
         </div>
       </div>
     </div>
