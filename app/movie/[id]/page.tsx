@@ -13,19 +13,25 @@ import { Skeleton } from "@/components/ui/skeleton";
 interface Params {
   id: string;
 }
+interface PageProps {
+  params: Promise<Params>;
+}
 
-export default function MoviePage({ params }: { params: Params }) {
+export default async function MoviePage({ params }: PageProps) {
   const [movie, setMovie] = useState<Media | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<Error | null>(null);
   const { isInMyList, addToMyList, removeFromMyList } = useMyList();
   const router = useRouter();
 
+  const { id } = await params;
+
   useEffect(() => {
     const fetchMovie = async () => {
       try {
         setIsLoading(true);
-        const movieData = await getMediaDetails(params.id, "movie");
+
+        const movieData = await getMediaDetails(id, "movie");
         setMovie(movieData);
       } catch (err) {
         setError(err instanceof Error ? err : new Error("An error occurred"));
@@ -34,7 +40,7 @@ export default function MoviePage({ params }: { params: Params }) {
       }
     };
     fetchMovie();
-  }, [params.id]);
+  }, [params]);
 
   useEffect(() => {
     if (error) {
@@ -114,7 +120,7 @@ export default function MoviePage({ params }: { params: Params }) {
               </>
             )}
           </Button>
-          <VideoPlayer movieId={params.id} mediaType="movie" />
+          <VideoPlayer movieId={id} mediaType="movie" />
         </div>
       </div>
     </div>
