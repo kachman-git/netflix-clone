@@ -1,59 +1,63 @@
-"use client"
+"use client";
 
-import { useEffect, useState } from 'react'
-import Image from "next/image"
-import { notFound, useRouter } from "next/navigation"
-import { VideoPlayer } from "@/components/video-player"
-import { getMediaDetails, Media } from "@/lib/tmdb"
-import { Button } from "@/components/ui/button"
-import { useMyList } from "@/lib/my-list-context"
-import { Plus, Check } from 'lucide-react'
-import { Skeleton } from "@/components/ui/skeleton"
+import { useEffect, useState } from "react";
+import Image from "next/image";
+import { notFound, useRouter } from "next/navigation";
+import { VideoPlayer } from "@/components/video-player";
+import { getMediaDetails, Media } from "@/lib/tmdb";
+import { Button } from "@/components/ui/button";
+import { useMyList } from "@/lib/my-list-context";
+import { Plus, Check } from "lucide-react";
+import { Skeleton } from "@/components/ui/skeleton";
 
-export default function MoviePage({ params }: { params: { id: string } }) {
-  const [movie, setMovie] = useState<Media | null>(null)
-  const [isLoading, setIsLoading] = useState(true)
-  const [error, setError] = useState<Error | null>(null)
-  const { isInMyList, addToMyList, removeFromMyList } = useMyList()
-  const router = useRouter()
+interface Params {
+  id: string;
+}
+
+export default function MoviePage({ params }: { params: Params }) {
+  const [movie, setMovie] = useState<Media | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<Error | null>(null);
+  const { isInMyList, addToMyList, removeFromMyList } = useMyList();
+  const router = useRouter();
 
   useEffect(() => {
     const fetchMovie = async () => {
       try {
-        setIsLoading(true)
-        const movieData = await getMediaDetails(params.id, 'movie')
-        setMovie(movieData)
+        setIsLoading(true);
+        const movieData = await getMediaDetails(params.id, "movie");
+        setMovie(movieData);
       } catch (err) {
-        setError(err instanceof Error ? err : new Error('An error occurred'))
+        setError(err instanceof Error ? err : new Error("An error occurred"));
       } finally {
-        setIsLoading(false)
+        setIsLoading(false);
       }
-    }
-    fetchMovie()
-  }, [params.id])
+    };
+    fetchMovie();
+  }, [params.id]);
 
   useEffect(() => {
     if (error) {
-      notFound()
+      notFound();
     }
-  }, [error])
+  }, [error]);
 
   if (isLoading) {
-    return <MovieSkeleton />
+    return <MovieSkeleton />;
   }
 
-  if (!movie) return null
+  if (!movie) return null;
 
-  const backdropUrl = `https://image.tmdb.org/t/p/original${movie.backdrop_path}`
-  const posterUrl = `https://image.tmdb.org/t/p/w500${movie.poster_path}`
+  const backdropUrl = `https://image.tmdb.org/t/p/original${movie.backdrop_path}`;
+  const posterUrl = `https://image.tmdb.org/t/p/w500${movie.poster_path}`;
 
   const handleMyListClick = () => {
     if (isInMyList(movie.id)) {
-      removeFromMyList(movie.id)
+      removeFromMyList(movie.id);
     } else {
-      addToMyList(movie)
+      addToMyList(movie);
     }
-  }
+  };
 
   return (
     <div className="container mx-auto px-4 py-8">
@@ -114,7 +118,7 @@ export default function MoviePage({ params }: { params: { id: string } }) {
         </div>
       </div>
     </div>
-  )
+  );
 }
 
 function MovieSkeleton() {
@@ -132,6 +136,5 @@ function MovieSkeleton() {
         </div>
       </div>
     </div>
-  )
+  );
 }
-

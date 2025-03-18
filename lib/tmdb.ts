@@ -1,8 +1,10 @@
 const TMDB_API_KEY = process.env.TMDB_API_KEY
 const TMDB_BASE_URL = 'https://api.themoviedb.org/3'
 
-export type Media = {
+export interface Media {
   id: number
+  runtime: number
+  genres: Genre[]
   title?: string
   name?: string
   poster_path: string
