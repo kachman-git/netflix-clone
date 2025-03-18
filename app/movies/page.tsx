@@ -1,16 +1,15 @@
 "use client"
 
 import { useState } from 'react'
-import { HeroSection } from '@/components/hero-section'
 import { MediaGrid } from '@/components/media-grid'
 import { GenreFilter } from '@/components/genre-filter'
 
-export default function Home() {
+export default function MoviesPage() {
   const [selectedGenre, setSelectedGenre] = useState<number | null>(null)
 
   return (
     <div className="space-y-12">
-      <HeroSection />
+      <h1 className="text-4xl font-bold">Movies</h1>
       <GenreFilter mediaType="movie" onGenreSelect={setSelectedGenre} />
       {selectedGenre ? (
         <section>
@@ -20,7 +19,7 @@ export default function Home() {
       ) : (
         <>
           <section>
-            <h2 className="text-2xl font-bold mb-6">Trending This Week</h2>
+            <h2 className="text-2xl font-bold mb-6">Trending Movies</h2>
             <MediaGrid type="trending" mediaType="movie" />
           </section>
           <section>
